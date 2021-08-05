@@ -155,3 +155,35 @@
          impl_decode([{Count - 1, Alphabet} | T], Result ++ [Alphabet])
       end.
 
+%% > p13:encodeDirect(['a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e']).
+%% [[a,a,a,a],[b],[c,c],[a,a],[d],[e,e,e,e]]
+
+
+
+%% > p14:duplicate([1,2,3,4]).   
+%%  [1,1,2,2,3,3,4,4]
+
+   duplicate([]) ->
+     [];
+   duplicate(L) ->
+     impl_duplicate(L, []).
+   impl_duplicate([], R) ->
+     R;
+   impl_duplicate([H|T], R) ->
+     impl_duplicate(T, R ++ [H, H]).
+
+%% > p15:duplicateN(3, ['a','b','c']).
+%%    [a,a,a,b,b,b,c,c,c]
+
+   duplicateN(_N, []) ->
+     [];
+   duplicateN(N, L) ->
+     impl_duplicateN(N, N, L, []).
+   impl_duplicateN(_, _N, [], R) ->
+     R;
+   impl_duplicateN(M, N, [H|T], R) ->
+     impl_duplicateN(M - 1, N, [H|T], R ++ [H]); 
+   impl_duplicateN(0, N, [_H|T], R) ->
+     impl_duplicateN(N, N, T, R);
+   impl_duplicateN(N, N, [H|T], R) ->
+     impl_duplicateN(N-1, N, [H|T], R ++ [H]). 
