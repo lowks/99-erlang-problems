@@ -178,12 +178,8 @@
    duplicateN(_N, []) ->
      [];
    duplicateN(N, L) ->
-     impl_duplicateN(N, N, L, []).
-   impl_duplicateN(_, _N, [], R) ->
+     impl_duplicateN(N, L,[]).
+   impl_duplicateN(_,[],R) ->
      R;
-   impl_duplicateN(M, N, [H|T], R) ->
-     impl_duplicateN(M - 1, N, [H|T], R ++ [H]); 
-   impl_duplicateN(0, N, [_H|T], R) ->
-     impl_duplicateN(N, N, T, R);
-   impl_duplicateN(N, N, [H|T], R) ->
-     impl_duplicateN(N-1, N, [H|T], R ++ [H]). 
+   impl_duplicateN(N, [H|T], R) ->
+     impl_duplicateN(N, T, R++lists:flatten(lists:duplicate(N,[H]))).
