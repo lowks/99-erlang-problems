@@ -183,3 +183,102 @@
      R;
    impl_duplicateN(N, [H|T], R) ->
      impl_duplicateN(N, T, R++lists:flatten(lists:duplicate(N,[H]))).
+
+%% > p16:drop(3, [1,2,3,4,5,6,7,8]).
+%% [1,2,4,5,7,8]
+
+   drop(_, []) ->
+     [];
+   drop(N, L) ->
+     impl_drop(N, L, []).
+   impl_drop(_, [], R) ->
+     R;
+   impl_drop(N, [N|T], R) ->
+     impl_drop(N, T, R);
+   impl_drop(N, [M|T], R) ->
+     impl_drop(N, T, R ++ [M]).
+
+%% > p17:split(3, [1,2,3,4,5,6,7]).
+%% [[1,2,3],[4,5,6,7]]     
+
+   split(_N, []) ->
+     [];
+   split(N, L) ->
+     impl_split(N, L, []).
+   impl_split(0, T, R) ->
+     [R]++[T];
+   impl_split(N, [H|T], R) ->
+     impl_split(N-1, T, R++[H]).
+
+%% > p18:slice(3,7, [1,2,3,4,5,6,7,8,9,10]).
+%%    [4,5,6,7]
+
+%% > p18:slice(3,7, [1,2,3,4]).    
+%% [4]
+
+   slice(_S, _F, []) ->
+     [];
+   slice(S, F, L) ->
+     impl_slice(S, F, L, []).
+   impl_slice(0, 0, _L, R) ->
+     R;
+   impl_slice(_, _, [], R) ->
+     R;
+   impl_slice(S, F, [_H|T], R) when S > 0  ->
+     impl_slice(S - 1, F, T, R);
+   impl_slice(0, F, [H|T], R) ->
+     impl_slice(0, F - 1, T, R++[H]).
+
+
+%% >p19:rotate(3, [1,2,3,4,5,6,7]). 
+%% [4,5,6,7,1,2,3]
+%%    > p19:rotate(-3, [1,2,3,4,5,6,7]).
+%%    [5,6,7,1,2,3,4]
+
+   rotate(_N, []) ->
+     [];
+   rotate(N, L) ->
+     impl_rotate(N, L, []).
+
+   impl_rotate(0, _ ,R) ->
+     R;
+   
+   %% impl_rotate(-1 ,_L , R) ->
+   %%  R;
+
+   impl_rotate(N, [H|T], _R) when N > 0 ->
+     impl_rotate(N - 1, T ++[H], T++[H]);
+   
+   impl_rotate(N, [H|T], _) when N < 0 ->
+     Last = lists:last([H|T]),
+     Remainder = [H|T] -- [Last],
+     impl_rotate(N+1, [Last]++Remainder, [Last]++Remainder). 
+
+%% > p20:removeAt(3, [1,2,3,4,5,6]).
+%%    {[1,2,3,5,6],4}
+
+   removeAt(_N, []) ->
+     [];
+   removeAt(N, L) ->
+     impl_removeAt(N, L, {[],0}).
+   
+   impl_removeAt(0, [H|T], {L,_}) ->
+     {L++T, H};
+   
+   impl_removeAt(N, [H|T], {L,_}) ->
+     impl_removeAt(N-1, T, {L++[H],0}).
+
+%% > p21:insertAt(3, 2, [1,2,4,5,6]).
+%% [1,2,3,4,5,6]
+
+   insertAt(_, _, []) ->
+    [];
+
+   insertAt(Number, Position, List) ->
+    impl_insertAt(Number, Position, List, []).
+
+   impl_insertAt(Number, 0, List, Result) ->
+     Result ++ [Number] ++ List;
+
+   impl_insertAt(Number, Position, [Head|Tail], Result) ->
+     impl_insertAt(Number, Position-1, Tail, Result ++ [Head]).
