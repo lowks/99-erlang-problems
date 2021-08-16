@@ -264,6 +264,9 @@
    
    impl_removeAt(0, [H|T], {L,_}) ->
      {L++T, H};
+
+   impl_removeAt(0, [], Result) ->
+     Result;
    
    impl_removeAt(N, [H|T], {L,_}) ->
      impl_removeAt(N-1, T, {L++[H],0}).
@@ -282,3 +285,76 @@
 
    impl_insertAt(Number, Position, [Head|Tail], Result) ->
      impl_insertAt(Number, Position-1, Tail, Result ++ [Head]).
+
+%% > p22:range(3, 7).
+%%    [3,4,5,6,7]
+
+   range(0, 0) ->
+     [];
+   range(Start, Finish) ->
+     impl_range(Start, Finish+1, []).
+   impl_range(Finish, Finish, Result) ->
+     Result;
+   impl_range(Start, Finish, Result) ->
+     impl_range(Start + 1, Finish, Result++[Start]). 
+
+
+%% > p23:randomSelect(3, [1,2,3,4,5,6,7,8]).
+%% [3,6,2]
+
+   randomSelect(_, []) ->
+     [];
+   randomSelect(N, L) ->
+     impl_randomSelect(N, L, []).
+   impl_randomSelect(0, _, Result) ->
+     Result;
+   impl_randomSelect(Number, List, Result) ->
+     {_, Randomselect} = removeAt(rand:uniform(Number), List),
+     impl_randomSelect(Number - 1, List, Result ++ [Randomselect]).
+
+
+%% > p24:lotto(3, 49).
+%%    [38,43,20]
+
+    lotto(_, 0) ->
+      [];
+    
+    lotto(Number, Totalnumber) ->
+      randomSelect(Number, range(1, Totalnumber)).
+
+%% > p25:randomPermute([1,2,3,4,5,6,7]).
+%%    [3,1,5,4,6,7,2]
+
+    randomPermute([]) ->
+      [];
+    randomPermute(L) ->
+      randomSelect(length(L), L).
+
+%% > p26:combinations(2, [1,2,3,4]).                           
+%%    [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
+
+    combinations(Number, List) when length(List) == Number ->
+      List;
+    
+    combinations(_Number, []) ->
+      [];
+
+    combinations(Number, List) ->
+      impl_combinations(Number, List, []).
+
+    impl_combinations(_, [], Result) ->
+      Result;
+
+    impl_combinations(Number, [H|T], Result) ->
+      if
+        length(T) - 1 == 0 ->
+          Tempresult = [[X] ++ lists:sublist(T,Y,Number-1) || X <- [H], Y <- [length(T)]];
+        true ->
+          Tempresult = [[X] ++ lists:sublist(T,Y,Number-1) || X <- [H], Y <- lists:seq(1,length(T))]
+      end,
+      Pred = fun(Element) -> length(Element) == Number end,
+      Tempresult2 = lists:filter(Pred, Tempresult),
+      impl_combinations(Number, T, Result ++ Tempresult2).
+
+    
+    
