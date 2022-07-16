@@ -158,6 +158,26 @@
 %% > p13:encodeDirect(['a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e']).
 %% [[a,a,a,a],[b],[c,c],[a,a],[d],[e,e,e,e]]
 
+   encodeDirect([]) ->
+     [];
+   encodeDirect(L) ->
+     impl_encodeDirect([], L).
+   impl_encodeDirect([], [H|T]) ->
+     impl_encodeDirect([H], T);
+   impl_encodeDirect(Result, []) ->
+    Result;
+   impl_encodeDirect(Result = [Head1|T2], [Head2|T]) ->
+     case Head1 =:= Head2 of
+          true ->
+            impl_encodeDirect(Result ++ [Head1], T);
+          false ->
+            impl_encodeDirect(Result ++ [[Head2]], T)
+     end.
+%%   impl_encodeDirect(Result = [H], [H|T]) ->
+%%     impl_encodeDirect(Result ++ [H], T).
+
+
+
 
 
 %% > p14:duplicate([1,2,3,4]).   
